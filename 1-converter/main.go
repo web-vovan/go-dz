@@ -3,10 +3,10 @@ package main
 import (
 	"bufio"
 	"errors"
-    "strconv"
-    "strings"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
 const USD_EUR = 0.91
@@ -70,6 +70,8 @@ func getOriginalCurrency() string {
 		fmt.Print("исходная валюта(usd, eur, rub): ")
 		fmt.Scan(&originalCurrency)
 
+		originalCurrency = strings.ToLower(originalCurrency)
+
 		if originalCurrency == "usd" || originalCurrency == "eur" || originalCurrency == "rub" {
 			return originalCurrency
 		}
@@ -84,6 +86,8 @@ func getTargetCurrency(originalCurrency string) string {
 	for {
 		fmt.Print("конечная валюта(usd, eur, rub): ")
 		fmt.Scan(&targetCurrency)
+
+		targetCurrency = strings.ToLower(targetCurrency)
 
 		if targetCurrency == originalCurrency {
 			fmt.Println("валюта не может равняться исходной")
@@ -100,16 +104,16 @@ func getTargetCurrency(originalCurrency string) string {
 
 func getQuantity() float64 {
 	var quantity float64
-    var err error
+	var err error
 
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		fmt.Print("сумма: ")
 
-        input, _ := reader.ReadString('\n') 
-        input = strings.TrimSpace(input)
-        quantity, err = strconv.ParseFloat(input, 64)
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(input)
+		quantity, err = strconv.ParseFloat(input, 64)
 
 		if err == nil {
 			return quantity
