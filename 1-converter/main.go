@@ -2,12 +2,13 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
+
+type mapCurrencyRate = map[string]map[string]float64
 
 const USD_EUR = 0.91
 const USD_RUB = 84.24
@@ -19,11 +20,13 @@ func main() {
 	var result float64
 	var err error
 
+	currencyRate := getCurrencyRate()
+
 	originalCurrency = getOriginalCurrency()
 	quantity = getQuantity()
 	targetingCurrency = getTargetCurrency(originalCurrency)
 
-	result, err = calculate(originalCurrency, targetingCurrency, quantity)
+	result, err = calculate(&currencyRate, originalCurrency, targetingCurrency, quantity)
 
 	if err != nil {
 		fmt.Print(err)
@@ -32,35 +35,35 @@ func main() {
 	}
 }
 
-func calculate(originalCurrency string, targetingCurrency string, quantity float64) (float64, error) {
-	if originalCurrency == "usd" {
-		switch targetingCurrency {
-		case "rub":
-			return USD_RUB * quantity, nil
-		case "eur":
-			return USD_EUR * quantity, nil
-		}
+func getCurrencyRate() mapCurrencyRate {
+	result := mapCurrencyRate{}
+
+	result["usd"] = map[string]float64{
+		"eur": USD_EUR,
+		"rub": USD_RUB,
 	}
 
-	if originalCurrency == "eur" {
-		switch targetingCurrency {
-		case "usd":
-			return quantity / USD_EUR, nil
-		case "rub":
-			return (USD_RUB / USD_EUR) * quantity, nil
-		}
+	result["eur"] = map[string]float64{
+		"usd": 1 / USD_EUR,
+		"rub": USD_RUB / USD_EUR,
 	}
 
-	if originalCurrency == "rub" {
-		switch targetingCurrency {
-		case "usd":
-			return quantity / USD_RUB, nil
-		case "eur":
-			return quantity / (USD_RUB / USD_EUR), nil
-		}
+	result["rub"] = map[string]float64{
+		"usd": 1 / USD_RUB,
+		"eur": 1 / (USD_RUB / USD_EUR),
 	}
 
-	return 0, errors.New("ошибка в расчетах")
+	return result
+}
+
+func calculate(currencyRate *mapCurrencyRate, originalCurrency string, targetingCurrency string, quantity float64) (float64, error) {
+	rate := (*currencyRate)[originalCurrency][targetingCurrency]
+
+	if rate == 0 {
+		return 0, fmt.Errorf("не найден курс %s к %s", originalCurrency, targetingCurrency)
+	}
+
+	return rate * quantity, nil
 }
 
 func getOriginalCurrency() string {
