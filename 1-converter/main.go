@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -57,9 +58,9 @@ func getCurrencyRate() mapCurrencyRate {
 }
 
 func calculate(currencyRate *mapCurrencyRate, originalCurrency string, targetingCurrency string, quantity float64) (float64, error) {
-	rate := (*currencyRate)[originalCurrency][targetingCurrency]
+	rate, ok := (*currencyRate)[originalCurrency][targetingCurrency]
 
-	if rate == 0 {
+	if !ok {
 		return 0, fmt.Errorf("не найден курс %s к %s", originalCurrency, targetingCurrency)
 	}
 
