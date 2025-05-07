@@ -3,18 +3,10 @@ package file
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
 func ReadFile(filename string) ([]byte, error) {
-	ext := filepath.Ext(filename)
-
-	if ext != ".json" {
-		return nil, fmt.Errorf("файл %s имеет не правильное расширение %s, ожидается .json", filename, ext)
-	}
-
 	data, err := os.ReadFile(filename)
-
 	if err != nil {
 		return nil, fmt.Errorf("не удалось прочитать файл %s", filename)
 	}
@@ -24,21 +16,19 @@ func ReadFile(filename string) ([]byte, error) {
 
 func WriteFile(content []byte, filename string) error {
 	if !IsExistsFile(filename) {
-		return fmt.Errorf("файл %s не существует", filename)
+		return fmt.Errorf("нельзя записать в файл %s, который не существует", filename)
 	}
 
-	file, err := os.Create(filename)
-
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
-		return fmt.Errorf("ошибка при записи в файл %s", filename)
+		return fmt.Errorf("не удалось открыть файл %s", filename)
 	}
 
 	defer file.Close()
 
 	_, err = file.Write(content)
-
 	if err != nil {
-		return err
+		return fmt.Errorf("не удалось записать в файл %s", filename)
 	}
 
 	return nil
@@ -52,16 +42,11 @@ func IsExistsFile(filename string) bool {
 	return true
 }
 
-func CreateBinFile(filename string) error {
-	fileExist := IsExistsFile(filename)
-
-	if !fileExist {
-		file, err := os.Create(filename)
-		file.Close()
-
-		if err != nil {
-			return fmt.Errorf("не удалось создать файл %s", filename)
-		}
+func CreateFile(filename string) error {
+	file, err := os.Create(filename)
+	file.Close()
+	if err != nil {
+		return fmt.Errorf("не удалось создать файл %s", filename)
 	}
 
 	return nil

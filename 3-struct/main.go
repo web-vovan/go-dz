@@ -7,18 +7,27 @@ import (
 	"go-course/bibin/storage"
 )
 
-func main() {
-	err := file.CreateBinFile("bins.json")
+const BIN_FILE = "bins.json"
 
-	if err != nil {
-		fmt.Println(err)
+func main() {
+	if !file.IsExistsFile(BIN_FILE) {
+		err := file.CreateFile(BIN_FILE)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	bin := bins.NewBin("uuid1", false, "one bin")
 
-	err = storage.SaveBin(bin)
-
+	err := storage.SaveBin(bin)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	binList, err := storage.ReadBins()
+	if err != nil {
+		fmt.Println(binList)
+	}
+
+	fmt.Println(binList)
 }
