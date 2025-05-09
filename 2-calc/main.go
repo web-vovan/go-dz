@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -94,7 +95,12 @@ func getNumbers() ([]float64, error) {
 
 	fmt.Print("введите числа через запятую (пример: 23, 43, 54): ")
 
-	input, _ := reader.ReadString('\n')
+	input, err := reader.ReadString('\n')
+
+	if err != nil {
+		return nil, errors.New("не удалось прочитать строку")
+	}
+
 	inputSlice := strings.Split(input, ",")
 
 	numbers := make([]float64, 0, len(inputSlice))
