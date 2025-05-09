@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-course/bibin/bins"
+	"go-course/bibin/config"
 	"go-course/bibin/file"
 	"go-course/bibin/storage"
 )
@@ -17,11 +18,18 @@ func main() {
 		}
 	}
 
+	_, err := config.NewConfig()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	storage := storage.NewFileStorage()
 
 	bin := bins.NewBin("uuid1", false, "one bin")
 
-	err := storage.SaveBin(bin)
+	err = storage.SaveBin(bin)
 	if err != nil {
 		fmt.Println(err)
 	}
