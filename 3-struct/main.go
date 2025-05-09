@@ -17,6 +17,8 @@ func main() {
 		}
 	}
 
+	storage := storage.NewFileStorage()
+
 	bin := bins.NewBin("uuid1", false, "one bin")
 
 	err := storage.SaveBin(bin)
