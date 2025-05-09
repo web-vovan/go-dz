@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-course/bibin/bins"
+	"go-course/bibin/config"
 	"go-course/bibin/file"
 	"go-course/bibin/storage"
 )
@@ -16,6 +17,10 @@ func main() {
 			fmt.Println(err)
 		}
 	}
+
+	config := config.NewConfig()
+
+	fmt.Println(config)
 
 	storage := storage.NewFileStorage()
 
