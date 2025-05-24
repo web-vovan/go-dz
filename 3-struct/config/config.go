@@ -8,21 +8,28 @@ import (
 )
 
 type Config struct {
-	Key string
+	ApiKey  string
+	BinFile string
 }
 
 func NewConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		return nil, errors.New("не удалось найти .env файл")
+		return nil, errors.New("не удалось найти .env файла")
 	}
 
-	key := os.Getenv("API_KEY")
-	if key == "" {
+	apiKey := os.Getenv("API_KEY")
+	if apiKey == "" {
 		return nil, errors.New("не установлен API_KEY .env файле")
 	}
 
+	binFile := os.Getenv("BIN_FILE")
+	if binFile == "" {
+		return nil, errors.New("не установлен BIN_FILE .env файле")
+	}
+
 	return &Config{
-		Key: key,
+		ApiKey:  apiKey,
+		BinFile: binFile,
 	}, nil
 }
