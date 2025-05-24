@@ -11,6 +11,12 @@ import (
 )
 
 func main() {
+	var operations = map[string]func([]float64) float64{
+		"sum": calculateSum,
+		"avg": calculateAvg,
+		"med": calculateMed,
+	}
+
 	operation := getOperation()
 	numbers, err := getNumbers()
 
@@ -18,16 +24,8 @@ func main() {
 		fmt.Println("неверный формат ввода чисел")
 	}
 
-	var result float64
-
-	switch operation {
-	case "sum":
-		result = calculateSum(numbers)
-	case "avg":
-		result = calculateAvg(numbers)
-	case "med":
-		result = calculateMed(numbers)
-	}
+	calculateFunc := operations[operation]
+	result := calculateFunc(numbers)
 
 	fmt.Println(result)
 }
