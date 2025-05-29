@@ -5,6 +5,7 @@ import (
 )
 
 type Storage interface {
-	SaveBin(bin bins.Bin) error
+	SaveBin(bins.Bin) error
 	ReadBins() (bins.BinList, error)
+	DeleteBinById(string) error
 }
