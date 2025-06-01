@@ -2,42 +2,31 @@ package main
 
 import (
 	"fmt"
-	"go-course/bibin/bins"
+	"go-course/bibin/args"
 	"go-course/bibin/config"
-	"go-course/bibin/file"
 	"go-course/bibin/storage"
 )
 
-const BIN_FILE = "bins.json"
-
 func main() {
-	if !file.IsExistsFile(BIN_FILE) {
-		err := file.CreateFile(BIN_FILE)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
+	// Аргументы из командной строки
+	args := args.NewArgs()
 
-	_, err := config.NewConfig()
-
+	// Загружаем конфиг
+	config, err := config.NewConfig()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	storage := storage.NewFileStorage()
+	// Инициализируем хранилище
+	storage := storage.NewFileStorage(config)
 
-	bin := bins.NewBin("uuid1", false, "one bin")
+	// Получаем результат
+	result, err := Run(args, config, storage)
 
-	err = storage.SaveBin(bin)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		fmt.Println(result)
 	}
-
-	binList, err := storage.ReadBins()
-	if err != nil {
-		fmt.Println(binList)
-	}
-
-	fmt.Println(binList)
 }
